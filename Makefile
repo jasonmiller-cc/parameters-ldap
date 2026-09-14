@@ -27,7 +27,11 @@ tidy:
 	go mod tidy
 
 docker-build:
-	docker build --build-arg VERSION=$(VERSION) -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .
+	docker buildx build \
+		--build-context parameters-core=../parameters-core \
+		--build-arg VERSION=$(VERSION) \
+		-t $(IMAGE):$(VERSION) -t $(IMAGE):latest \
+		--load .
 
 clean:
 	rm -rf bin/

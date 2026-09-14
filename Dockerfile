@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM golang:1.27-alpine AS builder
 
 ARG VERSION=dev
@@ -6,8 +7,11 @@ WORKDIR /src
 
 # Cache module downloads before copying source.
 COPY go.mod go.sum ./
-# parameters-core is provided via replace directive; copy it alongside.
-COPY ../parameters-core /parameters-core
+# parameters-core is a local replace living in a sibling directory outside
+# this build context; Docker forbids COPY-ing paths outside the primary
+# context, so it's supplied as a named build context instead — see
+# --build-context in the Makefile.
+COPY --from=parameters-core . /parameters-core
 RUN go mod download
 
 COPY . .
