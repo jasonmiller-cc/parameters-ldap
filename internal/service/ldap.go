@@ -82,7 +82,7 @@ func (s *LDAPService) dial() (*ldap.Conn, error) {
 	}
 	if s.cfg.LDAP.BindDN != "" {
 		if err := conn.Bind(s.cfg.LDAP.BindDN, s.cfg.LDAP.BindPassword); err != nil {
-			conn.Close()
+			_ = conn.Close()
 			return nil, fmt.Errorf("ldap bind: %w", err)
 		}
 	}
@@ -99,7 +99,7 @@ func (s *LDAPService) Ping(_ context.Context) error {
 	if err != nil {
 		return err
 	}
-	conn.Close()
+	_ = conn.Close()
 	return nil
 }
 
